@@ -1,4 +1,4 @@
-# 📌 TaskFlow API
+# 📌 To Do Task API
 Uma API simples e eficiente para gerenciamento de tarefas, desenvolvida em **Java + Spring Boot**, com suporte a criação, listagem, edição e exclusão de tarefas.
 
 ---
@@ -93,12 +93,12 @@ spring.jpa.show-sql=true
 
 ### **1. Clone o repositório**
 ```bash
-git clone https://github.com/Guzitos/To-Do_List_API.git
+git clone https://github.com/Guzitos/To-Do_Task_API.git
 ```
 
 ### **2. Entre na pasta**
 ```bash
-cd To-Do_List_API
+cd To-Do_Task_API
 ```
 
 ### **3. Instale as dependências**
