@@ -79,9 +79,9 @@ Remove a tarefa.
 No arquivo `application.properties`:
 
 ```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/todoapi?useSSL=false&allowPublicKeyRetrieval=true
-spring.datasource.username=root
-spring.datasource.password=SUA_SENHA
+spring.datasource.url=${DB_URL}  - sua url em uma variavel de ambiente
+spring.datasource.username=${DB_USER}  - seu usuario em uma variavel de ambiente
+spring.datasource.password=${DB_PASSWORD} - sua senha em uma variavel de ambiente
 
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
@@ -93,12 +93,12 @@ spring.jpa.show-sql=true
 
 ### **1. Clone o repositório**
 ```bash
-git clone https://github.com/Guzitos/To-Do_Task_API.git
+git clone https://github.com/Guzitos/TaskFlow_API.git
 ```
 
 ### **2. Entre na pasta**
 ```bash
-cd To-Do_Task_API
+cd TaskFlow_API
 ```
 
 ### **3. Instale as dependências**
