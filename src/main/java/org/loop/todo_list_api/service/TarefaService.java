@@ -30,6 +30,7 @@ public class TarefaService {
     public TarefaDTO atualizar(TarefaDTO tarefa){
         TarefaEntity tarefaEntity = new TarefaEntity(tarefa);
         return new TarefaDTO(taferaRepository.save(tarefaEntity));
+
     }
 
     // Exclui a tarefa correspondente ao ID dela
@@ -38,10 +39,19 @@ public class TarefaService {
         taferaRepository.delete(tarefa);
     }
 
-
     // fazer uma busca pelo ID
     public TarefaDTO buscarPorId(Long id){
         return new TarefaDTO(taferaRepository.findById(id).get());
     }
+
+
+    public void alternarConclusao(Long id) {
+        TarefaEntity tarefa = taferaRepository.findById(id)
+                .orElseThrow();
+
+        tarefa.setConcluido(!tarefa.isConcluido());
+        taferaRepository.save(tarefa);
+    }
+
 
 }

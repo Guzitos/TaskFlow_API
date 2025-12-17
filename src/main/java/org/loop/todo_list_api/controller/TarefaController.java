@@ -5,11 +5,14 @@ import org.loop.todo_list_api.service.TarefaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/tarefas")
+@CrossOrigin(origins = "http://localhost:5173")
 public class TarefaController {
 
     @Autowired
@@ -46,4 +49,13 @@ public class TarefaController {
     public TarefaDTO buscarPorId(@PathVariable("id") Long id){
         return taferaService.buscarPorId(id);
     }
+
+
+    @PatchMapping("/{id}/concluir")
+    public void alternarConclusao(@PathVariable Long id) {
+        taferaService.alternarConclusao(id);
+    }
+
+
+
 }
