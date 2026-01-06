@@ -3,6 +3,7 @@ package org.loop.todo_list_api.dto;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.*;
 import org.loop.todo_list_api.entity.TarefaEntity;
+import org.loop.todo_list_api.enums.Dificuldades;
 
 import java.time.LocalDate;
 
@@ -18,6 +19,7 @@ public class TarefaDTO {
     private String descricao;
     private boolean concluido;
     private LocalDate prazoFinal;
+    private Dificuldades dificuldade;
 
     // Construtor para converter Entity → DTO
     public TarefaDTO(TarefaEntity entity) {
@@ -26,5 +28,6 @@ public class TarefaDTO {
         this.descricao = entity.getDescricao();
         this.concluido = entity.isConcluido();
         this.prazoFinal = entity.getPrazoFinal();
+        this.dificuldade = entity.getDificuldade();
     }
 }

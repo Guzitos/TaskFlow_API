@@ -1,6 +1,7 @@
 package org.loop.todo_list_api.controller;
 
 import org.loop.todo_list_api.dto.TarefaDTO;
+import org.loop.todo_list_api.service.PerfilService;
 import org.loop.todo_list_api.service.TarefaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -51,11 +52,14 @@ public class TarefaController {
     }
 
 
-    @PatchMapping("/{id}/concluir")
-    public void alternarConclusao(@PathVariable Long id) {
-        taferaService.alternarConclusao(id);
+    // concluir tarefa
+    @PatchMapping("/{tarefaId}/concluir")
+    public ResponseEntity<Void> concluirTarefa(
+            @PathVariable Long tarefaId,
+            @RequestParam Long perfilId
+    ) {
+        taferaService.concluirTarefa(tarefaId, perfilId);
+        return ResponseEntity.ok().build();
     }
-
-
 
 }

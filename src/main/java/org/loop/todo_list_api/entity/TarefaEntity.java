@@ -3,6 +3,8 @@ package org.loop.todo_list_api.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.loop.todo_list_api.dto.TarefaDTO;
+import org.loop.todo_list_api.enums.Dificuldades;
+import org.loop.todo_list_api.enums.Ranks;
 
 import java.time.LocalDate;
 
@@ -29,6 +31,12 @@ public class TarefaEntity {
     @Column(nullable = false)
     private LocalDate prazoFinal;
 
+    private Dificuldades dificuldade;
+
+    public void concluir() {
+        this.concluido = true;
+    }
+
     // Construtor para converter DTO → Entity
     public TarefaEntity(TarefaDTO dto) {
         this.id = dto.getId();
@@ -36,5 +44,6 @@ public class TarefaEntity {
         this.descricao = dto.getDescricao();
         this.concluido = dto.isConcluido();
         this.prazoFinal = dto.getPrazoFinal();
+        this.dificuldade = dto.getDificuldade();
     }
 }

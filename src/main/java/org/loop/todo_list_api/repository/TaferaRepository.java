@@ -1,4 +1,4 @@
-package org.loop.todo_list_api;
+package org.loop.todo_list_api.repository;
 
 import org.loop.todo_list_api.entity.TarefaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
