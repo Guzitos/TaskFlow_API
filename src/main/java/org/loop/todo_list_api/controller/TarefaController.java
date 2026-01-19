@@ -15,9 +15,10 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import java.time.LocalDate;
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/tarefas")
-@CrossOrigin(origins = "http://localhost:5173")
+
 public class TarefaController {
 
     @Autowired
@@ -34,9 +35,10 @@ public class TarefaController {
 
     // 🔹 Criação da tarefa.
     @PostMapping
-    public void criar(@RequestBody TarefaDTO tarefa){
-        taferaService.criar(tarefa);
+    public ResponseEntity<TarefaDTO> criar(@RequestBody TarefaDTO tarefa){
+        TarefaDTO criada = taferaService.criar(tarefa);
         atividadeService.registrarCriacaoTarefa();
+        return ResponseEntity.ok(criada);
     }
 
     // 🔹 Atualizar uma tarefa.

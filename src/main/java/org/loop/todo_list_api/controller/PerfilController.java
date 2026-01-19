@@ -6,9 +6,10 @@ import org.loop.todo_list_api.service.PerfilService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/perfis")
-@CrossOrigin(origins = "http://localhost:5173")
+
 public class PerfilController {
 
     private final PerfilService perfilService;

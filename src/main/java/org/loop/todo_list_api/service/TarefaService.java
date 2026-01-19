@@ -13,7 +13,7 @@ import java.util.List;
 public class TarefaService {
 
     @Autowired
-    private TaferaRepository tarefaRepository;
+    private TaferaRepository TarefaRepository;
 
     @Autowired
     private PerfilService perfilService;
@@ -21,41 +21,43 @@ public class TarefaService {
 
     // Lista todos as tarefas do banco
     public List<TarefaDTO> listarTarefas(){
-        List<TarefaEntity> tarefa = tarefaRepository.findAll();
+        List<TarefaEntity> tarefa = TarefaRepository.findAll();
         return tarefa.stream().map(TarefaDTO::new).toList();
     }
 
     // Cria uma nova tarefa
-    public void criar(TarefaDTO tarefa){
+    public TarefaDTO criar(TarefaDTO tarefa){
         TarefaEntity tarefaEntity = new TarefaEntity(tarefa);
-        tarefaRepository.save(tarefaEntity);
+        TarefaEntity salva = TarefaRepository.save(tarefaEntity);
+        return new TarefaDTO(salva);
     }
 
     // Atualiza a tarefa do banco de dados
     public TarefaDTO atualizar(TarefaDTO tarefa){
         TarefaEntity tarefaEntity = new TarefaEntity(tarefa);
-        return new TarefaDTO(tarefaRepository.save(tarefaEntity));
+        return new TarefaDTO(TarefaRepository.save(tarefaEntity));
 
     }
 
     // Exclui a tarefa correspondente ao ID dela
     public void excluir(Long id){
-        TarefaEntity tarefa = tarefaRepository.findById(id).get();
-        tarefaRepository.delete(tarefa);
+        TarefaEntity tarefa = TarefaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Tarefa não encontrada"));
+        TarefaRepository.delete(tarefa);
     }
 
     // fazer uma busca pelo ID
     public TarefaDTO buscarPorId(Long id){
-        return new TarefaDTO(tarefaRepository.findById(id).get());
+        return new TarefaDTO(TarefaRepository.findById(id).get());
     }
 
 
     public void alternarConclusao(Long id) {
-        TarefaEntity tarefa = tarefaRepository.findById(id)
+        TarefaEntity tarefa = TarefaRepository.findById(id)
                 .orElseThrow();
 
         tarefa.setConcluido(!tarefa.isConcluido());
-        tarefaRepository.save(tarefa);
+        TarefaRepository.save(tarefa);
     }
 
 
@@ -63,7 +65,7 @@ public class TarefaService {
     @Transactional
     public void concluirTarefa(Long tarefaId, Long perfilId) {
 
-        TarefaEntity tarefa = tarefaRepository.findById(tarefaId)
+        TarefaEntity tarefa = TarefaRepository.findById(tarefaId)
                 .orElseThrow(() -> new RuntimeException("Tarefa não encontrada"));
 
         if (tarefa.isConcluido()) {
@@ -76,7 +78,7 @@ public class TarefaService {
 
         perfilService.adicionarXp(perfilId, xp);
 
-        tarefaRepository.save(tarefa);
+        TarefaRepository.save(tarefa);
     }
 
 
