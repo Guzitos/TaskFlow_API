@@ -1,9 +1,11 @@
 package org.loop.todo_list_api.service;
 
 import jakarta.transaction.Transactional;
-import org.loop.todo_list_api.repository.TaferaRepository;
 import org.loop.todo_list_api.dto.TarefaDTO;
+import org.loop.todo_list_api.entity.PerfilEntity;
 import org.loop.todo_list_api.entity.TarefaEntity;
+import org.loop.todo_list_api.repository.PerfilRepository;
+import org.loop.todo_list_api.repository.TaferaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,74 +14,57 @@ import java.util.List;
 @Service
 public class TarefaService {
 
-    @Autowired
-    private TaferaRepository TarefaRepository;
+    @Autowired private TaferaRepository tarefaRepository;
+    @Autowired private PerfilRepository perfilRepository;
+    @Autowired private PerfilService perfilService;
 
-    @Autowired
-    private PerfilService perfilService;
-
-
-    // Lista todos as tarefas do banco
-    public List<TarefaDTO> listarTarefas(){
-        List<TarefaEntity> tarefa = TarefaRepository.findAll();
-        return tarefa.stream().map(TarefaDTO::new).toList();
+    public List<TarefaDTO> listarTarefasPorUsuario(Long perfilId){
+        return tarefaRepository.findByPerfilId(perfilId).stream()
+                .map(TarefaDTO::new).toList();
     }
 
-    // Cria uma nova tarefa
-    public TarefaDTO criar(TarefaDTO tarefa){
-        TarefaEntity tarefaEntity = new TarefaEntity(tarefa);
-        TarefaEntity salva = TarefaRepository.save(tarefaEntity);
-        return new TarefaDTO(salva);
+    @Transactional
+    public TarefaDTO criar(TarefaDTO tarefaDTO, Long perfilId){
+        PerfilEntity dono = perfilRepository.findById(perfilId)
+                .orElseThrow(() -> new RuntimeException("Perfil não encontrado"));
+
+        TarefaEntity tarefaEntity = new TarefaEntity(tarefaDTO);
+        tarefaEntity.setPerfil(dono);
+
+        return new TarefaDTO(tarefaRepository.save(tarefaEntity));
     }
 
-    // Atualiza a tarefa do banco de dados
-    public TarefaDTO atualizar(TarefaDTO tarefa){
-        TarefaEntity tarefaEntity = new TarefaEntity(tarefa);
-        return new TarefaDTO(TarefaRepository.save(tarefaEntity));
-
-    }
-
-    // Exclui a tarefa correspondente ao ID dela
-    public void excluir(Long id){
-        TarefaEntity tarefa = TarefaRepository.findById(id)
+    @Transactional
+    public TarefaDTO atualizar(TarefaDTO tarefaDTO) {
+        TarefaEntity existente = tarefaRepository.findById(tarefaDTO.getId())
                 .orElseThrow(() -> new RuntimeException("Tarefa não encontrada"));
-        TarefaRepository.delete(tarefa);
+
+        existente.setTitulo(tarefaDTO.getTitulo());
+        existente.setDescricao(tarefaDTO.getDescricao());
+        existente.setPrazoFinal(tarefaDTO.getPrazoFinal());
+        existente.setDificuldade(tarefaDTO.getDificuldade());
+        existente.setConcluido(tarefaDTO.isConcluido());
+
+        return new TarefaDTO(tarefaRepository.save(existente));
     }
 
-    // fazer uma busca pelo ID
-    public TarefaDTO buscarPorId(Long id){
-        return new TarefaDTO(TarefaRepository.findById(id).get());
-    }
-
-
-    public void alternarConclusao(Long id) {
-        TarefaEntity tarefa = TarefaRepository.findById(id)
-                .orElseThrow();
-
-        tarefa.setConcluido(!tarefa.isConcluido());
-        TarefaRepository.save(tarefa);
-    }
-
-
-    // Concluir Tarefa.
     @Transactional
     public void concluirTarefa(Long tarefaId, Long perfilId) {
-
-        TarefaEntity tarefa = TarefaRepository.findById(tarefaId)
+        TarefaEntity tarefa = tarefaRepository.findById(tarefaId)
                 .orElseThrow(() -> new RuntimeException("Tarefa não encontrada"));
 
-        if (tarefa.isConcluido()) {
-            throw new IllegalStateException("Tarefa já concluída");
-        }
+        if (tarefa.isConcluido()) throw new IllegalStateException("Tarefa já concluída");
 
         tarefa.concluir();
-
         int xp = tarefa.getDificuldade().getXp();
-
         perfilService.adicionarXp(perfilId, xp);
 
-        TarefaRepository.save(tarefa);
+        tarefaRepository.save(tarefa);
     }
 
-
+    public void excluir(Long id){
+        TarefaEntity tarefa = tarefaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Tarefa não encontrada"));
+        tarefaRepository.delete(tarefa);
+    }
 }

@@ -1,27 +1,20 @@
 package org.loop.todo_list_api.dto;
 
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.*;
 import org.loop.todo_list_api.entity.TarefaEntity;
 import org.loop.todo_list_api.enums.Dificuldades;
+import java.time.LocalDateTime;
 
-import java.time.LocalDate;
-
-@JsonPropertyOrder({ "id", "titulo", "descricao", "concluido", "prazoFinal" })
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class TarefaDTO {
-
     private Long id;
     private String titulo;
     private String descricao;
     private boolean concluido;
-    private LocalDate prazoFinal;
+    private LocalDateTime prazoFinal; // Padronizado para LocalDateTime
     private Dificuldades dificuldade;
 
-    // Construtor para converter Entity → DTO
+    // Construtor para conversão Entity -> DTO
     public TarefaDTO(TarefaEntity entity) {
         this.id = entity.getId();
         this.titulo = entity.getTitulo();

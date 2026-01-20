@@ -1,74 +1,54 @@
 package org.loop.todo_list_api.controller;
 
 import org.loop.todo_list_api.dto.TarefaDTO;
-import org.loop.todo_list_api.entity.AtividadeEntity;
-import org.loop.todo_list_api.enums.TipoAtividade;
-import org.loop.todo_list_api.repository.AtividadeRepository;
-import org.loop.todo_list_api.service.AtividadeService;
+import org.loop.todo_list_api.entity.PerfilEntity;
 import org.loop.todo_list_api.service.TarefaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
-
-import java.time.LocalDate;
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/tarefas")
-
 public class TarefaController {
 
     @Autowired
-    private TarefaService taferaService;
+    private TarefaService tarefaService;
 
-    @Autowired
-    private AtividadeService atividadeService;
-
-    // 🔹 rota pra puxa todas as tarefas do banco de dados.
-    @GetMapping
-    public List<TarefaDTO> listarTodos(){
-        return taferaService.listarTarefas();
-    }
-
-    // 🔹 Criação da tarefa.
+    // Criar tarefa (O ID vem do Token, não da URL!)
     @PostMapping
-    public ResponseEntity<TarefaDTO> criar(@RequestBody TarefaDTO tarefa){
-        TarefaDTO criada = taferaService.criar(tarefa);
-        atividadeService.registrarCriacaoTarefa();
-        return ResponseEntity.ok(criada);
+    public ResponseEntity<TarefaDTO> criar(@RequestBody TarefaDTO dto) {
+        PerfilEntity logado = (PerfilEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ResponseEntity.ok(tarefaService.criar(dto, logado.getId()));
     }
 
-    // 🔹 Atualizar uma tarefa.
+    // Listar apenas as tarefas do dono do Token
+    @GetMapping
+    public ResponseEntity<List<TarefaDTO>> listar() {
+        PerfilEntity logado = (PerfilEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ResponseEntity.ok(tarefaService.listarTarefasPorUsuario(logado.getId()));
+    }
+
+    // Atualizar uma tarefa
     @PutMapping("/{id}")
-    public void atualizar(@PathVariable Long id, @RequestBody TarefaDTO tarefa) {
-        tarefa.setId(id);
-        taferaService.atualizar(tarefa);
+    public ResponseEntity<TarefaDTO> atualizar(@PathVariable Long id, @RequestBody TarefaDTO dto) {
+        dto.setId(id);
+        return ResponseEntity.ok(tarefaService.atualizar(dto));
     }
 
-    // 🔹 rota para excluir uma tarefa pelo ID dela.
+    // Concluir tarefa e ganhar XP
+    @PatchMapping("/{id}/concluir")
+    public ResponseEntity<Void> concluir(@PathVariable Long id) {
+        PerfilEntity logado = (PerfilEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        tarefaService.concluirTarefa(id, logado.getId());
+        return ResponseEntity.noContent().build();
+    }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable("id") Long id){
-        taferaService.excluir(id);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Void> excluir(@PathVariable Long id) {
+        tarefaService.excluir(id);
+        return ResponseEntity.noContent().build();
     }
-
-    // 🔹 rota para buscar uma tarefa pelo ID.
-    @GetMapping("/{id}")
-    public TarefaDTO buscarPorId(@PathVariable("id") Long id){
-        return taferaService.buscarPorId(id);
-    }
-
-
-    // 🔹 concluir tarefa
-    @PatchMapping("/{tarefaId}/concluir")
-    public ResponseEntity<Void> concluirTarefa( @PathVariable Long tarefaId, @RequestParam Long perfilId ) {
-
-        atividadeService.registrarConclusaoTarefa();
-        taferaService.concluirTarefa(tarefaId, perfilId);
-        return ResponseEntity.ok().build();
-    }
-
 }

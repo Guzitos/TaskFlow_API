@@ -1,5 +1,6 @@
 package org.loop.todo_list_api.controller;
 
+import org.loop.todo_list_api.dto.PerfilDTO;
 import org.loop.todo_list_api.dto.StatusPerfilResponse;
 import org.loop.todo_list_api.entity.PerfilEntity;
 import org.loop.todo_list_api.service.PerfilService;
@@ -20,8 +21,8 @@ public class PerfilController {
 
     // 🔹 Criar perfil
     @PostMapping
-    public ResponseEntity<PerfilEntity> criarPerfil() {
-        PerfilEntity perfil = perfilService.criarPerfil();
+    public ResponseEntity<PerfilEntity> criarPerfil(@RequestBody PerfilDTO perfilDTO) {
+        PerfilEntity perfil = perfilService.criarPerfil(perfilDTO);
         return ResponseEntity.ok(perfil);
     }
 
@@ -41,7 +42,7 @@ public class PerfilController {
                 new StatusPerfilResponse(
                         perfil.getXpTotal(),
                         perfil.getRank()
-                )
+                                )
         );
     }
 }
