@@ -30,13 +30,13 @@ Criar uma API robusta para gerenciamento de tarefas com:
 
 ## 🧩 Tecnologias Utilizadas
 
-- Java 17
-- Spring Boot
-- Spring Security
-- JWT (Auth0)
-- JPA / Hibernate
-- MySQL
-- Maven
+- Java 17  
+- Spring Boot  
+- Spring Security  
+- JWT (Auth0)  
+- JPA / Hibernate  
+- MySQL  
+- Maven  
 
 ---
 
@@ -117,7 +117,7 @@ mvn spring-boot:run
 ✅ Código organizado e escalável  
 ✅ Uso correto de autenticação e autorização  
 ✅ Projeto pronto para integração com Frontend  
-✅ Fácil evolução para microserviços ou novos módulos
+✅ Fácil evolução para microserviços ou novos módulos  
 
 ---
 
