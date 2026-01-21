@@ -3,6 +3,7 @@ package org.loop.todo_list_api.service;
 import org.loop.todo_list_api.dto.PerfilDTO;
 import org.loop.todo_list_api.entity.PerfilEntity;
 import org.loop.todo_list_api.entity.Role;
+import org.loop.todo_list_api.enums.Ranks;
 import org.loop.todo_list_api.repository.PerfilRepository;
 import org.loop.todo_list_api.repository.RoleRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -26,9 +27,15 @@ public class PerfilService {
     @Transactional
     public void adicionarXp(Long perfilId, int xp) {
         PerfilEntity perfil = perfilRepository.findById(perfilId)
-                .orElseThrow(() -> new RuntimeException("Perfil ID " + perfilId + " não encontrado no banco."));
+                .orElseThrow(() -> new RuntimeException("Perfil não encontrado."));
 
-        perfil.adicionarXp(xp);
+        // 1. Soma o novo XP
+        perfil.setXpTotal(perfil.getXpTotal() + xp);
+
+        // 2. Usa a lógica do seu Enum para descobrir o novo Rank
+        Ranks novoRank = Ranks.calcularRank(perfil.getXpTotal());
+        perfil.setRank(novoRank);
+
         perfilRepository.save(perfil);
     }
 
@@ -38,7 +45,6 @@ public class PerfilService {
             throw new RuntimeException("Este nome de usuário já está em uso.");
         }
 
-        // Garante que a Role USER existe para não dar erro 500 ao salvar
         Role userRole = roleRepository.findByName("USER")
                 .orElseGet(() -> {
                     Role newRole = new Role();
@@ -51,10 +57,15 @@ public class PerfilService {
         perfil.setPassword(passwordEncoder.encode(dto.getPassword()));
         perfil.setRoles(Set.of(userRole));
 
+        // Inicialização segura
+        perfil.setXpTotal(0);
+        perfil.setRank(Ranks.BRONZE);
+
         return perfilRepository.save(perfil);
     }
 
     public PerfilEntity buscarPorId(Long id) {
-        return perfilRepository.findById(id).orElseThrow(() -> new RuntimeException("Perfil não encontrado"));
+        return perfilRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Perfil não encontrado"));
     }
 }

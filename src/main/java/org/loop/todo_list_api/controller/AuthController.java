@@ -1,8 +1,9 @@
 package org.loop.todo_list_api.controller;
-
 import org.loop.todo_list_api.dto.LoginDTO;
 import org.loop.todo_list_api.dto.LoginResponseDTO;
+import org.loop.todo_list_api.dto.PerfilDTO;
 import org.loop.todo_list_api.entity.PerfilEntity;
+import org.loop.todo_list_api.service.PerfilService;
 import org.loop.todo_list_api.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,18 +21,24 @@ public class AuthController {
     @Autowired
     private TokenService tokenService;
 
+    @Autowired
+    private PerfilService perfilService; // Chame o seu serviço aqui!
+
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginDTO data) {
-        // Tenta autenticar
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.perfilName(), data.password());
         var auth = this.authenticationManager.authenticate(usernamePassword);
 
-        // Pega o usuário autenticado e converte para sua entidade
         var perfil = (PerfilEntity) auth.getPrincipal();
-
-        // Gera o token usando o seu serviço
         String token = tokenService.generateToken(perfil);
 
         return ResponseEntity.ok(new LoginResponseDTO(token));
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity register(@RequestBody PerfilDTO data) {
+        // Usa a lógica robusta que você já criou no PerfilService
+        this.perfilService.criarPerfil(data);
+        return ResponseEntity.ok().build();
     }
 }

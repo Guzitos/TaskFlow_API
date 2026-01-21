@@ -41,9 +41,13 @@ public class TarefaService {
 
         existente.setTitulo(tarefaDTO.getTitulo());
         existente.setDescricao(tarefaDTO.getDescricao());
-        existente.setPrazoFinal(tarefaDTO.getPrazoFinal());
         existente.setDificuldade(tarefaDTO.getDificuldade());
         existente.setConcluido(tarefaDTO.isConcluido());
+
+        // Converte o LocalDate do DTO para LocalDateTime da Entity
+        if (tarefaDTO.getPrazoFinal() != null) {
+            existente.setPrazoFinal(tarefaDTO.getPrazoFinal().atStartOfDay());
+        }
 
         return new TarefaDTO(tarefaRepository.save(existente));
     }

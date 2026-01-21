@@ -17,37 +17,39 @@ public class TarefaController {
     @Autowired
     private TarefaService tarefaService;
 
-    // Criar tarefa (O ID vem do Token, não da URL!)
+    // Pega o ID do usuário logado através do SecurityContext
+    private Long getLogadoId() {
+        PerfilEntity logado = (PerfilEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return logado.getId();
+    }
+
     @PostMapping
     public ResponseEntity<TarefaDTO> criar(@RequestBody TarefaDTO dto) {
-        PerfilEntity logado = (PerfilEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return ResponseEntity.ok(tarefaService.criar(dto, logado.getId()));
+        return ResponseEntity.ok(tarefaService.criar(dto, getLogadoId()));
     }
 
-    // Listar apenas as tarefas do dono do Token
     @GetMapping
     public ResponseEntity<List<TarefaDTO>> listar() {
-        PerfilEntity logado = (PerfilEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return ResponseEntity.ok(tarefaService.listarTarefasPorUsuario(logado.getId()));
+        return ResponseEntity.ok(tarefaService.listarTarefasPorUsuario(getLogadoId()));
     }
 
-    // Atualizar uma tarefa
     @PutMapping("/{id}")
     public ResponseEntity<TarefaDTO> atualizar(@PathVariable Long id, @RequestBody TarefaDTO dto) {
+        // Garante que o ID da URL seja o mesmo do DTO para evitar confusão
         dto.setId(id);
         return ResponseEntity.ok(tarefaService.atualizar(dto));
     }
 
-    // Concluir tarefa e ganhar XP
     @PatchMapping("/{id}/concluir")
     public ResponseEntity<Void> concluir(@PathVariable Long id) {
-        PerfilEntity logado = (PerfilEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        tarefaService.concluirTarefa(id, logado.getId());
-        return ResponseEntity.noContent().build();
+        tarefaService.concluirTarefa(id, getLogadoId());
+        return ResponseEntity.noContent().build(); // 204 No Content é o ideal para Patch/Delete de sucesso
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluir(@PathVariable Long id) {
+        // No seu Service atual, o excluir não valida o dono,
+        // mas é boa prática passar o ID do logado se quiser proteger o Delete no futuro
         tarefaService.excluir(id);
         return ResponseEntity.noContent().build();
     }
