@@ -1,66 +1,130 @@
-# 🚀 TaskFlow API - To-Do List Gamificado
+# 🚀 To-Do List API
 
-Este projeto é uma API REST para gerenciamento de tarefas com sistema de recompensas (XP e Ranks) e segurança via JWT.
-
----
-
-## 🔐 Segurança JWT (Passo a Passo)
-
-O sistema utiliza **Spring Security** com tokens **JWT**. Para acessar os recursos de tarefas, o usuário deve estar autenticado.
-
-### Fluxo de Autenticação:
-1. **Login:** `POST /auth/login` enviando `perfilName` e `password`.
-2. **Token:** A API retorna um token assinado.
-3. **Uso:** Enviar o token no cabeçalho `Authorization: Bearer <seu_token>`.
-
-
+API REST desenvolvida em **Spring Boot** para gerenciamento de **usuários, tarefas, XP, rank e heatmap de atividades**, com autenticação via **JWT**.
 
 ---
 
-## 🎮 Gamificação
-
-Ao concluir tarefas, o perfil acumula XP e sobe de Rank automaticamente:
-
-| Dificuldade | XP | Rank | XP Necessário |
-| :--- | :--- | :--- | :--- |
-| FACIL | 10 | BRONZE | Inicial |
-| MEDIA | 20 | PRATA | 101 |
-| DIFICIL | 40 | OURO | 301 |
-| EXTREMA | 100 | PLATINA | 601 |
+## 🧩 Tecnologias
+- Java 17
+- Spring Boot
+- Spring Security + JWT
+- JPA / Hibernate
+- MySQL
+- Maven
 
 ---
 
-## 🛠️ Como Rodar o Projeto
+## 🔐 Autenticação
 
-1. Configure seu banco de dados no `application.properties`.
-2. Adicione sua chave secreta: `api.security.token.secret=sua_chave_aqui`.
-3. Execute o comando:
-   ```bash
-   mvn spring-boot:run
-   ```
+### Login
+```http
+POST /auth/login
+```
 
-## 📝 Exemplo de JSON (Criar Tarefa)
-```bash
+**Body**
+```json
 {
-  "titulo": "Implementar JWT",
-  "descricao": "Finalizar a branch implementation",
-  "dificuldade": "EXTREMA",
-  "prazoFinal": "2026-05-20T10:00:00"
+  "perfilName": "usuario",
+  "password": "senha"
 }
 ```
-## 📂 Git - Enviando para a Master
-```bash
-git add .
-git commit -m "Finalizando segurança e gamificação"
-git checkout master
-git merge implementation
-git push origin master
+
+**Response**
+```json
+{
+  "token": "JWT_TOKEN"
+}
 ```
 
+➡️ Use o token no header:
+```http
+Authorization: Bearer JWT_TOKEN
+```
 
+---
 
+## 👤 Perfis
 
+### Criar perfil
+```http
+POST /perfis
+```
 
+### Buscar perfil por ID
+```http
+GET /perfis/{id}
+```
 
+### Status do perfil (XP e Rank)
+```http
+GET /perfis/{id}/status
+```
 
+---
 
+## 📝 Tarefas (🔒 Protegido)
+
+### Criar tarefa
+```http
+POST /tarefas
+```
+
+### Listar tarefas do usuário logado
+```http
+GET /tarefas
+```
+
+### Atualizar tarefa
+```http
+PUT /tarefas/{id}
+```
+
+### Concluir tarefa (ganha XP)
+```http
+PATCH /tarefas/{id}/concluir
+```
+
+### Excluir tarefa
+```http
+DELETE /tarefas/{id}
+```
+
+---
+
+## 📊 Atividades / Heatmap
+
+### Buscar atividades por período
+```http
+GET /atividades?inicio=YYYY-MM-DD&fim=YYYY-MM-DD
+```
+
+**Exemplo**
+```http
+GET /atividades?inicio=2026-01-01&fim=2026-01-31
+```
+
+---
+
+## 🛡️ Regras de Negócio
+- Token expira em **2 horas**
+- XP é ganho ao concluir tarefas
+- Rank é calculado automaticamente
+- ID do usuário sempre vem do **JWT**, nunca da URL
+
+---
+
+## ▶️ Como rodar o projeto
+
+```bash
+mvn clean install
+mvn spring-boot:run
+```
+
+---
+
+## 📌 Status do Projeto
+✅ Em desenvolvimento ativo
+
+---
+
+Feito com ☕ e foco em produtividade 🚀
