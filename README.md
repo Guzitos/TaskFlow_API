@@ -1,13 +1,39 @@
-# 🚀 To-Do List API
+# 🚀 To-Do List API — Backend Portfolio Project
 
-API REST desenvolvida em **Spring Boot** para gerenciamento de **usuários, tarefas, XP, rank e heatmap de atividades**, com autenticação via **JWT**.
+API REST desenvolvida com **Spring Boot**, focada em **boas práticas de backend**, **segurança**, **regra de negócio** e **arquitetura limpa**.  
+Projeto ideal para demonstrar domínio em **Java + Spring + JWT + JPA**.
 
 ---
 
-## 🧩 Tecnologias
+## 🎯 Objetivo do Projeto
+
+Criar uma API robusta para gerenciamento de tarefas com:
+- Autenticação segura via **JWT**
+- Controle de usuários e permissões
+- Sistema de **XP e Rank** para gamificação
+- Registro de atividades para **heatmap de produtividade**
+- Separação clara de responsabilidades (Controller, Service, Repository)
+
+---
+
+## 🧠 Principais Conceitos Aplicados
+
+- 🔐 **Spring Security com JWT**
+- 🧱 Arquitetura em camadas
+- 🗂️ DTOs para controle de exposição de dados
+- 🔄 Transações com `@Transactional`
+- 📊 Regras de negócio desacopladas
+- 🛡️ Segurança baseada no usuário autenticado
+- 📈 Gamificação (XP + Rank automático)
+
+---
+
+## 🧩 Tecnologias Utilizadas
+
 - Java 17
 - Spring Boot
-- Spring Security + JWT
+- Spring Security
+- JWT (Auth0)
 - JPA / Hibernate
 - MySQL
 - Maven
@@ -16,104 +42,67 @@ API REST desenvolvida em **Spring Boot** para gerenciamento de **usuários, tare
 
 ## 🔐 Autenticação
 
-### Login
 ```http
 POST /auth/login
 ```
 
-**Body**
-```json
-{
-  "perfilName": "usuario",
-  "password": "senha"
-}
-```
-
-**Response**
-```json
-{
-  "token": "JWT_TOKEN"
-}
-```
-
-➡️ Use o token no header:
-```http
-Authorization: Bearer JWT_TOKEN
-```
+Utiliza **JWT** para autenticação.  
+O ID do usuário é extraído diretamente do token, garantindo maior segurança.
 
 ---
 
 ## 👤 Perfis
 
-### Criar perfil
-```http
-POST /perfis
-```
+- Criação de usuários
+- Consulta de perfil
+- Consulta de status (XP e Rank)
 
-### Buscar perfil por ID
 ```http
-GET /perfis/{id}
-```
-
-### Status do perfil (XP e Rank)
-```http
-GET /perfis/{id}/status
+POST   /perfis
+GET    /perfis/{id}
+GET    /perfis/{id}/status
 ```
 
 ---
 
-## 📝 Tarefas (🔒 Protegido)
+## 📝 Tarefas (Protegido por JWT)
 
-### Criar tarefa
-```http
-POST /tarefas
-```
+- Criar tarefas
+- Listar tarefas do usuário autenticado
+- Atualizar tarefas
+- Concluir tarefas (ganha XP automaticamente)
+- Excluir tarefas
 
-### Listar tarefas do usuário logado
 ```http
-GET /tarefas
-```
-
-### Atualizar tarefa
-```http
-PUT /tarefas/{id}
-```
-
-### Concluir tarefa (ganha XP)
-```http
-PATCH /tarefas/{id}/concluir
-```
-
-### Excluir tarefa
-```http
-DELETE /tarefas/{id}
+POST    /tarefas
+GET     /tarefas
+PUT     /tarefas/{id}
+PATCH   /tarefas/{id}/concluir
+DELETE  /tarefas/{id}
 ```
 
 ---
 
 ## 📊 Atividades / Heatmap
 
-### Buscar atividades por período
+Registro automático de ações do usuário para análise de produtividade.
+
 ```http
 GET /atividades?inicio=YYYY-MM-DD&fim=YYYY-MM-DD
 ```
 
-**Exemplo**
-```http
-GET /atividades?inicio=2026-01-01&fim=2026-01-31
-```
+---
+
+## 🛡️ Regras de Negócio Importantes
+
+- O **ID do usuário nunca vem da URL**, sempre do JWT
+- Token com expiração de **2 horas**
+- XP é calculado com base na dificuldade da tarefa
+- Rank evolui automaticamente conforme XP acumulado
 
 ---
 
-## 🛡️ Regras de Negócio
-- Token expira em **2 horas**
-- XP é ganho ao concluir tarefas
-- Rank é calculado automaticamente
-- ID do usuário sempre vem do **JWT**, nunca da URL
-
----
-
-## ▶️ Como rodar o projeto
+## ▶️ Como Executar
 
 ```bash
 mvn clean install
@@ -122,9 +111,20 @@ mvn spring-boot:run
 
 ---
 
-## 📌 Status do Projeto
-✅ Em desenvolvimento ativo
+## 📌 Diferencial para Recrutadores
+
+✅ Segurança real aplicada  
+✅ Código organizado e escalável  
+✅ Uso correto de autenticação e autorização  
+✅ Projeto pronto para integração com Frontend  
+✅ Fácil evolução para microserviços ou novos módulos
 
 ---
 
-Feito com ☕ e foco em produtividade 🚀
+## 👨‍💻 Autor
+
+Projeto desenvolvido para **portfólio profissional**, demonstrando habilidades em backend com Java e Spring Boot.
+
+---
+
+🚀 Sempre evoluindo.
