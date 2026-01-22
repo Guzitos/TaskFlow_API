@@ -1,209 +1,174 @@
-# 🚀 To-Do List API --- Backend Portfolio Project
+# 🚀 TaskFlow API - Backend Project
 
-API REST desenvolvida com **Spring Boot**, focada em **boas práticas de
-backend**, **segurança**, **regras de negócio** e **arquitetura
-limpa**.\
-Projeto criado para **portfólio profissional**, demonstrando domínio em
-**Java + Spring + JWT + JPA**.
+TaskFlow API é uma aplicação **backend RESTful** desenvolvida em **Java
+com Spring Boot**, criada como evolução de um projeto inicial de To-Do
+List simples.\
+Nesta versão, o projeto foi transformado em um **backend completo**, com
+**autenticação de usuários**, **sistema de XP e Rank**, **regras de
+negócio**, e **deploy em produção**.
 
 ------------------------------------------------------------------------
 
 ## 🎯 Objetivo do Projeto
 
-Criar uma API robusta para gerenciamento de tarefas com: - Autenticação
-segura via **JWT** - Controle de usuários - Sistema de **XP e Rank**
-(gamificação) - Registro de atividades (heatmap de produtividade) -
-Arquitetura em camadas bem definida
+O objetivo deste projeto foi:
+
+-   Evoluir de um CRUD simples para uma aplicação backend real
+-   Implementar autenticação e autorização com JWT
+-   Criar regras de negócio (XP e Rank por conclusão de tarefas)
+-   Trabalhar persistência de dados com banco relacional
+-   Realizar deploy em ambiente de produção
 
 ------------------------------------------------------------------------
 
-## 🧩 Tecnologias Utilizadas
+## 🛠️ Tecnologias Utilizadas
 
 -   Java 17
 -   Spring Boot
--   Spring Security
--   JWT (Auth0)
--   JPA / Hibernate
--   MySQL
--   Maven
+-   Spring Security + JWT
+-   Spring Data JPA
+-   PostgreSQL
+-   Swagger (Documentação da API)
+-   Deploy em produção no Render
+
+------------------------------------------------------------------------
+
+## 🏗️ Arquitetura
+
+O projeto segue arquitetura em camadas:
+
+-   Controller → Camada de entrada das requisições
+-   Service → Regras de negócio
+-   Repository → Persistência de dados
+-   DTO → Transferência de dados entre camadas
+
+Além disso:
+
+-   Autenticação stateless com JWT\
+-   Filtro de segurança customizado\
+-   Endpoints protegidos por autenticação
 
 ------------------------------------------------------------------------
 
 ## 🔐 Autenticação
 
-### POST `/auth/login`
+A API utiliza **Spring Security + JWT**.
 
-**Request Body**
+Fluxo:
 
-``` json
-{
-  "perfilName": "joao",
-  "password": "123456"
-}
-```
-
-**Response**
-
-``` json
-{
-  "token": "JWT_TOKEN"
-}
-```
-
-**Header obrigatório nas rotas protegidas**
-
-    Authorization: Bearer JWT_TOKEN
+1.  Registro de usuário
+2.  Login e geração do token JWT
+3.  Envio do token nas requisições protegidas
 
 ------------------------------------------------------------------------
 
-## 👤 Perfis
+## 📌 Rotas da API
 
-### POST `/perfis` --- Criar perfil
+### 🔐 Autenticação
 
-**Request Body**
+| Método | Endpoint           | Descrição |
+|--------|-------------------|-----------|
+| POST   | `/auth/register` | Registro de novo usuário |
+| POST   | `/auth/login`    | Login e geração do token JWT |
 
-``` json
-{
-  "perfilName": "joao",
-  "password": "123456"
-}
-```
+---
 
-### GET `/perfis/{id}` --- Buscar perfil
+### 👤 Perfil
 
-**Response**
+| Método | Endpoint                | Descrição |
+|--------|------------------------|-----------|
+| GET    | `/perfis/me`           | Consulta XP e Rank do usuário logado |
+| GET    | `/perfis/{id}/status`  | Consulta XP e Rank por ID |
 
-``` json
-{
-  "id": 1,
-  "perfilName": "joao",
-  "xpTotal": 120,
-  "rank": "BRONZE"
-}
-```
+---
 
-### GET `/perfis/{id}/status` --- XP e Rank
+### ✅ Tarefas
 
-**Response**
+| Método | Endpoint                     | Descrição |
+|--------|------------------------------|-----------|
+| POST   | `/tarefas`                  | Criar nova tarefa |
+| GET    | `/tarefas`                  | Listar tarefas do usuário |
+| PUT    | `/tarefas/{id}`             | Atualizar tarefa |
+| PATCH | `/tarefas/{id}/concluir`     | Concluir tarefa |
+| DELETE| `/tarefas/{id}`             | Remover tarefa |
 
-``` json
-{
-  "xpTotal": 120,
-  "rank": "BRONZE"
-}
-```
+---
 
-------------------------------------------------------------------------
+## 💡 Principais Funcionalidades
 
-## 📝 Tarefas (🔒 JWT)
-
-### POST `/tarefas` --- Criar tarefa
-
-**Request Body**
-
-``` json
-{
-  "titulo": "Estudar Spring Security",
-  "descricao": "Implementar JWT no projeto",
-  "prazoFinal": "2026-01-30",
-  "dificuldade": "MEDIA"
-}
-```
-
-**Response**
-
-``` json
-{
-  "id": 10,
-  "titulo": "Estudar Spring Security",
-  "descricao": "Implementar JWT no projeto",
-  "prazoFinal": "2026-01-30",
-  "dificuldade": "MEDIA",
-  "concluido": false
-}
-```
-
-### GET `/tarefas` --- Listar tarefas do usuário
-
-**Response**
-
-``` json
-[
-  {
-    "id": 10,
-    "titulo": "Estudar Spring Security",
-    "descricao": "Implementar JWT no projeto",
-    "prazoFinal": "2026-01-30",
-    "dificuldade": "MEDIA",
-    "concluido": false
-  }
-]
-```
-
-### PUT `/tarefas/{id}` --- Atualizar tarefa
-
-**Request Body**
-
-``` json
-{
-  "titulo": "Estudar Spring Security + JWT",
-  "descricao": "Finalizar autenticação",
-  "prazoFinal": "2026-02-01",
-  "dificuldade": "DIFICIL",
-  "concluido": false
-}
-```
-
-### PATCH `/tarefas/{id}/concluir` --- Concluir tarefa
-
-**Response**
-
-    204 No Content
-
-### DELETE `/tarefas/{id}` --- Excluir tarefa
-
-**Response**
-
-    204 No Content
+-   Autenticação e autorização de usuários
+-   CRUD completo de tarefas
+-   Sistema de XP e Rank por conclusão de tarefas
+-   Associação de tarefas por usuário
+-   Filtro de atividades por intervalo de datas
+-   Endpoints REST semânticos
 
 ------------------------------------------------------------------------
 
-## 📊 Atividades / Heatmap
+## 🚀 Deploy
 
-### GET `/atividades`
+A API está em produção no Render:
 
-**Query Params**
+https://taskflow-api-00e6.onrender.com
 
-    ?inicio=2026-01-01&fim=2026-01-31
+------------------------------------------------------------------------
 
-**Response**
+## 📂 Repositório
 
-``` json
-[
-  {
-    "data": "2026-01-10",
-    "quantidade": 3
-  }
-]
+https://github.com/Guzitos/TaskFlow_API
+
+------------------------------------------------------------------------
+
+## ▶️ Como executar localmente
+
+### Pré-requisitos
+
+-   Java 17+
+-   Maven
+-   PostgreSQL
+
+### Passos
+
+``` bash
+# Clonar o repositório
+git clone https://github.com/Guzitos/TaskFlow_API.git
+
+# Entrar na pasta
+cd TaskFlow_API
+
+# Configurar o application.properties com seu banco
+
+# Rodar a aplicação
+mvn spring-boot:run
 ```
 
-------------------------------------------------------------------------
+A API estará disponível em:
 
-## 🛡️ Regras de Negócio Importantes
+http://localhost:8080
 
--   O ID do usuário nunca vem do body ou URL
--   Todas as operações usam o JWT
--   Prevenção contra IDOR
--   Token com expiração de 2 horas
--   XP e Rank calculados automaticamente
+Swagger:
+
+http://localhost:8080/swagger-ui.html
 
 ------------------------------------------------------------------------
 
+## 📈 Próximas melhorias
 
-## 📌 Diferencial para Recrutadores
+-   Testes automatizados
+-   Paginação de tarefas
+-   Refresh Token
+-   Dockerização
 
-✅ Segurança aplicada corretamente\
-✅ Arquitetura limpa e escalável\
-✅ Regras de negócio claras\
-✅ Pronto para Frontend\
-✅ Código de nível profissional
+------------------------------------------------------------------------
+
+## 👨‍💻 Autor
+
+Gustavo (Guzitos Developer)
+
+Focado em Desenvolvimento Backend com Java e Banco de Dados.
+
+------------------------------------------------------------------------
+
+## 📄 Licença
+
+Projeto desenvolvido para fins de portfólio.
