@@ -168,7 +168,3 @@ Gustavo (Guzitos Developer)
 Focado em Desenvolvimento Backend com Java e Banco de Dados.
 
 ------------------------------------------------------------------------
-
-## 📄 Licença
-
-Projeto desenvolvido para fins de portfólio.
